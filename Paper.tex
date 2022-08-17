@@ -1,4 +1,4 @@
-\documentclass[9pt,oneside]{amsart}
+\documentclass[12pt]{amsart}
 %\usepackage{tweaklist}
 \usepackage{cancel}
 \usepackage{xspace}
@@ -19,8 +19,9 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{afterpage}
 \usepackage{tikz}
-\usepackage[bookmarks=true, unicode=true, pdftitle={Ethereum Yellow Paper: a formal specification of Ethereum, a programmable blockchain}, pdfauthor={Dr. Gavin Wood},pdfkeywords={Ethereum, Yellow Paper, blockchain, virtual machine, cryptography, decentralised, singleton, transaction, generalised},pdfborder={0 0 0.5 [1 3]}]{hyperref}
+\usepackage[hidelinks, unicode=true, pdftitle={Ethereum Yellow Paper: a formal specification of Ethereum, a programmable blockchain}, pdfauthor={Dr. Gavin Wood},pdfkeywords={Ethereum, Yellow Paper, blockchain, virtual machine, cryptography, decentralised, singleton, transaction, generalised}]{hyperref}
 %,pagebackref=true
+\usepackage[scale=2,copyright]{ccicons}
 
 \usepackage{tabu} %requires array.
 
@@ -44,11 +45,9 @@
 
 \usepackage[final]{microtype} % https://tex.stackexchange.com/questions/75140/is-it-possible-to-make-latex-mark-overfull-boxes-in-the-output#comment382776_75142
 
-\input{Version.tex}
+\newcommand{\YellowPaperVersionNumber}{7251f10 -- 2022-07-31}
+
 % Default rendering options
-\definecolor{pagecolor}{rgb}{1,0.98,0.9}
-\def\YellowPaperVersionNumber{unknown revision}
-\IfFileExists{Options.tex}{\input{Options.tex}}
 
 \newcommand{\hcancel}[1]{%
     \tikz[baseline=(tocancel.base)]{
@@ -64,26 +63,40 @@
 \newcommand*\ie{i.e.\@\xspace}
 %\renewcommand{\itemhook}{\setlength{\topsep}{0pt}  \setlength{\itemsep}{0pt}\setlength{\leftmargin}{15pt}}
 
-\title[Ethereum: A Secure Decentralised Generalised Transaction Ledger\\ \smaller \textbf{{Berlin version}}]{Ethereum: A Secure Decentralised Generalised Transaction Ledger \\ \smaller \textbf{{Berlin version \YellowPaperVersionNumber}}}
-\author{
-    Dr. Gavin Wood\\
-    Founder, Ethereum \& Parity\\
-    gavin@parity.io
+\title[Ethereum: A Secure Decentralised Generalised Transaction Ledger]{Ethereum: A Secure Decentralised \\ Generalised Transaction Ledger\\ \tiny \textbf{{Berlin version \YellowPaperVersionNumber}}}
+\author[Dr. Gavin Wood, Aeron Buchanan, Christoph Jentzsch, Yoichi Hirai, et alia]{
+    Dr. Gavin Wood, Aeron Buchanan, Christoph Jentzsch, Yoichi Hirai, et alia
 }
 \begin{document}
-
-\pagecolor{pagecolor}
+\setlength{\columnsep}{20pt}
 
 \begin{abstract}
-The blockchain paradigm when coupled with cryptographically-secured transactions has demonstrated its utility through a number of projects, with Bitcoin being one of the most notable ones. Each such project can be seen as a simple application on a decentralised, but singleton, compute resource. We can call this paradigm a transactional singleton machine with shared-state.
+  The blockchain paradigm when coupled with cryptographically-secured transactions has demonstrated its utility through a number of projects, with Bitcoin being one of the most notable ones. Each such project can be seen as a simple application on a decentralised, but singleton, compute resource. We can call this paradigm a transactional singleton machine with shared-state.
 
-Ethereum implements this paradigm in a generalised manner. Furthermore it provides a plurality of such resources, each with a distinct state and operating code but able to interact through a message-passing framework with others. We discuss its design, implementation issues, the opportunities it provides and the future hurdles we envisage.
+  Ethereum implements this paradigm in a generalised manner. Furthermore it provides a plurality of such resources, each with a distinct state and operating code but able to interact through a message-passing framework with others. We discuss its design, implementation issues, the opportunities it provides and the future hurdles we envisage.
 \end{abstract}
 
 \maketitle
+\thispagestyle{empty}
 
-\setlength{\columnsep}{20pt}
-\begin{multicols}{2}
+\vspace*{\fill}
+
+\section*{Foreword for ETHBerlin$^3$}
+
+Berlin has always been the city of Ether. It is home to one of the few Ethereum Foundation offices, it was the place where the first Devcon was held in 2014, it was the host of the earliest Ethereum meetups, and it is the birthplace of the Goerli testnet. Back in the day, the city's spirit reflected well in the values and the vision of the global, trustless state machine.
+
+It's not a coincidence that this unique location hosts a community of subversive thinkers and inspired hackers, a community that created a very particular event in 2018: ETHBerlin.
+
+The booklet you are holding is the Berlin version of the Ethereum Yellow Paper, initially authored by Dr. Gavin Wood, who was the first to formalise the Ethereum protocol specification. Here, \textit{Berlin} stands for the Berlin protocol upgrade rolled out on the Ethereum mainnet in 2021. The Berlin version of the Yellow Paper is most likely the last version to be published. The paper has seen countless co-authors and contributors and had to be deprecated in the end due to its difficulties maintaining and updating it.
+
+This booklet is a gift to every participant of ETHBerlin$^3$ in 2022. It's not only a historical souvenir but also an acknowledgement to everyone who contributed to Ethereum in the past, not only the prominent names. It should encourage everyone to build a decentralised future.
+
+Start today; welcome to Berlin!
+
+\hspace*{\fill}\tiny\textsc{Department of Decentralisation, September 2022, Berlin}
+
+\cleardoublepage
+\normalsize
 
 \section{Introduction}\label{sec:introduction}
 
@@ -118,6 +131,7 @@ Early work on smart contracts has been done by \cite{szabo1997formalizing} and \
 %E language?
 For a list of terms used in this paper, refer to Appendix~\ref{ch:Terminology}.
 
+\newpage
 \section{The Blockchain Paradigm} \label{ch:overview}
 
 Ethereum, taken as a whole, can be viewed as a transaction-based state machine: we begin with a genesis state and incrementally execute transactions to morph it into some current state. It is this current state which we accept as the canonical ``version'' of the world of Ethereum. The state can include such information as account balances, reputations, trust arrangements, data pertaining to information of the physical world; in short, anything that can currently be represented by a computer is admissible. Transactions thus represent a valid arc between two states; the `valid' part is important---there exist far more invalid state changes than valid state changes. Invalid state changes might, \eg, be things such as reducing an account balance without an equal and opposite increase elsewhere. A valid state transition is one which comes about through a transaction. Formally:
@@ -205,6 +219,7 @@ For the Ethereum main network
   \beta = 1
 \end{equation}
 
+\newpage
 \section{Conventions}\label{ch:conventions}
 
 We use a number of typographical conventions for the formal notation, some of which are quite particular to the present work:
@@ -237,6 +252,7 @@ We define a number of useful functions throughout. \linkdest{ell}One of the more
 \ell(\mathbf{x}) \equiv \mathbf{x}[\lVert \mathbf{x} \rVert - 1]
 \end{equation}
 
+\newpage
 \section{Blocks, State and Transactions} \label{ch:bst}
 
 Having introduced the basic concepts behind Ethereum, we will discuss the meaning of a transaction, a block and the state in more detail.
@@ -327,7 +343,7 @@ All transaction types specify a number of common fields:
 EIP-2930 (type 1) transactions also have:
 \begin{description}
 \item[accessList]\linkdest{tx_access_list}{} List of access entries to warm up; formally $T_{\mathbf{A}}$.
-\linkdest{access_list_entry}{}Each access list entry $E$ is a tuple of an account address and a list of storage keys: $E \equiv (E_{\mathrm{a}}, E_{\mathbf{s}})$. 
+\linkdest{access_list_entry}{}Each access list entry $E$ is a tuple of an account address and a list of storage keys: $E \equiv (E_{\mathrm{a}}, E_{\mathbf{s}})$.
 \item[chainId]\linkdest{tx_chain_id}{} Chain ID; formally $T_{\mathrm{c}}$. Must be equal to the network chain ID \hyperlink{chain_id}{$\beta$}.
 \item[yParity]\linkdest{tx_y_parity}{} Signature Y parity; formally $T_{\mathrm{y}}$.
 \end{description}
@@ -585,7 +601,7 @@ y &\equiv \begin{cases}
 H'_{\mathrm{i}} &\equiv \max(H_{\mathrm{i}} - \kappa, 0)
 \end{align}
 \begin{equation}
-\kappa \equiv \begin{cases} 
+\kappa \equiv \begin{cases}
   3000000  & \text{if} \quad F_{\mathrm{Byzantium}} \leqslant H_{\mathrm{i}} < F_{\mathrm{Constantinople}} \\
   5000000  & \text{if} \quad F_{\mathrm{Constantinople}} \leqslant H_{\mathrm{i}} < F_{\mathrm{Muir Glacier}} \\
   9000000  & \text{if} \quad F_{\mathrm{Muir Glacier}} \leqslant H_{\mathrm{i}} < F_{\mathrm{London}} \\
@@ -643,6 +659,7 @@ where $(n, m) = \mathtt{PoW}(H_{\hcancel{n}}, H_{\mathrm{n}}, \mathbf{d})$
 
 Noting additionally that \textbf{extraData} must be at most 32 bytes.
 
+\newpage
 \section{Gas and Payment} \label{ch:payment}
 
 In order to avoid issues of network abuse and to sidestep the inevitable questions stemming from Turing completeness, all programmable computation in Ethereum is subject to fees. The fee schedule is specified in units of \textit{gas} (see Appendix \ref{app:fees} for the fees associated with various computation). Thus any given fragment of programmable computation (this includes creating contracts, making message calls, utilising and accessing account storage and executing operations on the virtual machine) has a universally agreed cost in terms of gas.
@@ -653,6 +670,7 @@ In general, Ether used to purchase gas that is not refunded is delivered to the 
 
 %\subsubsection{Determining Computation Costs}
 
+\newpage
 \section{Transaction Execution} \label{ch:transactions}
 
 The execution of a transaction is the most complex part of the Ethereum protocol: it defines the state transition function \hyperlink{Upsilon_state_transition}{$\Upsilon$}. It is assumed that any transactions executed first pass the initial tests of intrinsic validity. These include:
@@ -789,6 +807,7 @@ The final state, $\boldsymbol{\sigma}'$, is reached after deleting all accounts 
 
 These are used to help define the \hyperlink{Transaction_Receipt}{transaction receipt} and are also used \hyperlink{sigma_n}{later} for state and nonce validation.
 
+\newpage
 \section{Contract Creation}\label{ch:create}\hypertarget{endow}{}
 
 There are a number of intrinsic parameters used when creating an account: sender ($s$), original transactor\footnote{which can differ from the sender in the case of a message call or contract creation not directly triggered by a transaction but coming from the execution of EVM-code} ($o$),
@@ -916,6 +935,7 @@ In addition, observe that if the execution of the initialising code \hyperlink{R
 \subsection{Subtleties}
 Note that while the initialisation code is executing, the newly created address exists but with no intrinsic body code\footnote{During initialization code execution, \texttt{EXTCODESIZE} on the address should return zero, which is the length of the code of the account while \texttt{CODESIZE} should return the length of the initialization code (as defined in \ref{subsec:instruction-set}).}. Thus any message call received by it during this time causes no code to be executed. If the initialisation execution ends with a {\small SELFDESTRUCT} instruction, the matter is moot since the account will be deleted before the transaction is completed. For a normal {\small STOP} code, or if the code returned is otherwise empty, then the state is left with a zombie account, and any remaining balance will be locked into the account forever.
 
+\newpage
 \section{Message Call} \label{ch:call}
 In the case of executing a message call, several parameters are required: sender ($s$), transaction originator ($o$), recipient ($r$), the account whose code is to be executed ($c$, usually the same as recipient), available gas ($g$), value ($v$) and gas price ($p$) together with an arbitrary length byte array, $\mathbf{d}$, the input data of the call, the present depth of the message-call/contract-creation stack ($e$) and finally the permission to make modifications to the state ($w$).
 
@@ -1017,6 +1037,7 @@ Their full formal definition is in Appendix \ref{app:precompiled}.
 \pi \equiv \{1, 2, 3, 4, 5, 6, 7, 8, 9 \}
 \end{equation}
 
+\newpage
 \section{Execution Model} \label{ch:model}
 
 The execution model specifies how the system state is altered given a series of bytecode instructions and a small tuple of environmental data. This is specified through a formal model of a virtual state machine, known as the Ethereum Virtual Machine (EVM). It is a \textit{quasi-}Turing-complete machine; the \textit{quasi} qualification comes from the fact that the computation is intrinsically bounded through a parameter, \textit{gas}, which limits the total amount of computation done.
@@ -1219,6 +1240,7 @@ A' & \equiv & A \\
 
 However, instructions do typically alter one or several components of these values. Altered components listed by instruction are noted in Appendix \ref{app:vm}, alongside values for $\alpha$ and $\delta$ and a formal description of the gas requirements.
 
+\newpage
 \section{Blocktree to Blockchain} \label{ch:ghost}
 
 The canonical blockchain is a path from root to leaf through the entire block tree. In order to have consensus over which path it is, conceptually we identify the path that has had the most computation done upon it, or, the \textit{heaviest} path. Clearly one factor that helps determine the heaviest path is the block number of the leaf, equivalent to the number of blocks, not counting the unmined \hyperlink{Genesis_Block}{genesis block}, in the path. The longer the path, the greater the total mining effort that must have been done in order to arrive at the leaf. This is akin to existing schemes, such as that employed in Bitcoin-derived protocols.
@@ -1233,6 +1255,7 @@ B' & \equiv & P(B_{\mathrm{H}})
 
 As such given a block $B$, $B_{\mathrm{t}}$ is its total difficulty, $B'$ is its parent block and $B_{\mathrm{d}}$ is its difficulty.
 
+\newpage
 \section{Block Finalisation} \label{ch:finalisation}
 
 The process of finalising a block involves four stages:
@@ -1384,6 +1407,7 @@ There exists a seed which can be computed for each block by scanning through the
 
 Mining involves grabbing random slices of the dataset and hashing them together. Verification can be done with low memory by using the cache to regenerate the specific pieces of the dataset that you need, so you only need to store the cache. The large dataset is updated once every $\hyperlink{J__epoch}{J_{\mathrm{epoch}}}$ blocks, so the vast majority of a miner's effort will be reading the dataset, not making changes to it. The mentioned parameters as well as the algorithm is explained in detail in Appendix \ref{app:ethash}.
 
+\newpage
 \section{Implementing Contracts}
 
 There are several patterns of contracts engineering that allow particular useful behaviours; two of these that we will briefly discuss are data feeds and random numbers.
@@ -1396,6 +1420,7 @@ The general pattern involves a single contract within Ethereum which, when given
 \subsection{Random Numbers}
 Providing random numbers within a deterministic system is, naturally, an impossible task. However, we can approximate with pseudo-random numbers by utilising data which is generally unknowable at the time of transacting. Such data might include the block's hash, the block's timestamp and the block's beneficiary address. In order to make it hard for malicious miners to control those values, one should use the {\small \hyperlink{blockhash}{BLOCKHASH}} operation in order to use hashes of the previous 256 blocks as pseudo-random numbers. For a series of such numbers, a trivial solution would be to add some constant amount and hashing the result.
 
+\newpage
 \section{Future Directions} \label{ch:future}
 
 The state database won't be forced to maintain all past state \hyperlink{trie}{trie} structures into the future. It should maintain an age for each node and eventually discard nodes that are neither recent enough nor checkpoints. Checkpoints, or a set of nodes in the database that allow a particular block's state trie to be traversed, could be used to place a maximum limit on the amount of computation needed in order to retrieve any state throughout the blockchain.
@@ -1412,25 +1437,30 @@ Some form of hierarchical structure, achieved by either consolidating smaller li
 
 Finally, verifiable computation, if made generally available and efficient enough, may provide a route to allow the proof-of-work to be the verification of final state.
 
+\newpage
 \section{Conclusion} \label{ch:conclusion}
 
 We have introduced, discussed and formally defined the protocol of Ethereum. Through this protocol the reader may implement a node on the Ethereum network and join others in a decentralised secure social operating system. Contracts may be authored in order to algorithmically specify and autonomously enforce rules of interaction.
 
+\newpage
 \section{Acknowledgements}
 
 Many thanks to Aeron Buchanan for authoring the \textit{Homestead} revisions, Christoph Jentzsch for authoring the Ethash algorithm and Yoichi Hirai for doing most of the EIP-150 changes. Important maintenance, useful corrections and suggestions were provided by a number of others from the Ethereum DEV organisation and Ethereum community at large including Gustav Simonsson, Pawe\l{} Bylica, Jutta Steiner, Nick Savers, Viktor Tr\'{o}n, Marko Simovic, Giacomo Tazzari and, of course, Vitalik Buterin.
 
+\newpage
 \section{Availability}
 
 The source of this paper is maintained at \url{https://github.com/ethereum/yellowpaper/}. An auto-generated PDF is located at \url{https://ethereum.github.io/yellowpaper/paper.pdf}.
 
+\newpage
 \bibliographystyle{plainnat}
 \bibliography{Biblio}
 
-\end{multicols}
+%%%\end{multicols}
 
+\cleardoublepage
+\tiny
 \appendix
-
 \section{Terminology} \label{ch:Terminology}
 
 \begin{description}
@@ -2091,9 +2121,9 @@ with $C_\text{\tiny CALL}$, $C_\text{\tiny SELFDESTRUCT}$, $C_\text{\tiny SLOAD}
 
 $W_{\mathrm{zero}}$ = \{{\small STOP}, {\small RETURN}, {\small REVERT}\}
 
-$W_{\mathrm{base}}$ = \{{\small ADDRESS}, {\small ORIGIN}, {\small CALLER}, {\small CALLVALUE}, {\small CALLDATASIZE}, {\small CODESIZE}, {\small GASPRICE}, {\small COINBASE},\newline \noindent\hspace*{1cm} {\small TIMESTAMP}, {\small NUMBER}, {\small DIFFICULTY}, {\small GASLIMIT}, {\small CHAINID}, {\small RETURNDATASIZE}, {\small POP}, {\small PC}, {\small MSIZE}, {\small GAS}\}
+$W_{\mathrm{base}}$ = \{{\small ADDRESS}, {\small ORIGIN}, {\small CALLER}, {\small CALLVALUE}, {\small CALLDATASIZE}, {\small CODESIZE}, {\small GASPRICE},\newline \noindent\hspace*{1cm} {\small COINBASE}, {\small TIMESTAMP}, {\small NUMBER}, {\small DIFFICULTY}, {\small GASLIMIT}, {\small CHAINID},\newline \noindent\hspace*{1cm} {\small RETURNDATASIZE}, {\small POP}, {\small PC}, {\small MSIZE}, {\small GAS}\}
 
-$W_{\mathrm{verylow}}$ = \{{\small ADD}, {\small SUB}, {\small NOT}, {\small LT}, {\small GT}, {\small SLT}, {\small SGT}, {\small EQ}, {\small ISZERO}, {\small AND}, {\small OR}, {\small XOR}, {\small BYTE}, {\small SHL}, {\small SHR}, {\small SAR}, \newline \noindent\hspace*{1cm} {\small CALLDATALOAD}, {\small MLOAD}, {\small MSTORE}, {\small MSTORE8}, {\small PUSH*}, {\small DUP*}, {\small SWAP*}\}
+$W_{\mathrm{verylow}}$ = \{{\small ADD}, {\small SUB}, {\small NOT}, {\small LT}, {\small GT}, {\small SLT}, {\small SGT}, {\small EQ}, {\small ISZERO}, {\small AND}, {\small OR}, {\small XOR}, {\small BYTE}, {\small SHL}, {\small SHR},\newline \noindent\hspace*{1cm} {\small SAR}, {\small CALLDATALOAD}, {\small MLOAD}, {\small MSTORE}, {\small MSTORE8}, {\small PUSH*}, {\small DUP*}, {\small SWAP*}\}
 
 $W_{\mathrm{low}}$ = \{{\small MUL}, {\small DIV}, {\small SDIV}, {\small MOD}, {\small SMOD}, {\small SIGNEXTEND}, {\small SELFBALANCE}\}
 
@@ -2689,7 +2719,7 @@ G_{\mathrm{newaccount}} & \text{if} \quad \mathtt{DEAD}(\boldsymbol{\sigma}, t) 
 &&&& where $r = \boldsymbol{\mu}_{\mathbf{s}}[0] \bmod 2^{160}$\\ \\
 &&&& $\boldsymbol{\sigma}'[I_{\mathrm{a}}]_{\mathrm{b}} = 0$ \\
 &&&&\linkdest{C tiny SELFDESTRUCT}{} $\begin{aligned}
-C_{\text{\tiny SELFDESTRUCT}}(\boldsymbol{\sigma}, \boldsymbol{\mu}) &\equiv G_{\mathrm{selfdestruct}} 
+C_{\text{\tiny SELFDESTRUCT}}(\boldsymbol{\sigma}, \boldsymbol{\mu}) &\equiv G_{\mathrm{selfdestruct}}
 + \begin{cases}
   0 & \text{if}\quad r \in \hyperlink{accessed_addresses_defn_words_A__a}{A_{\mathbf{a}}}\\
   G_{\mathrm{coldaccountaccess}} & \text{otherwise}
@@ -2900,4 +2930,15 @@ Symbol & Latex Command & Description \\
 \linkdest{bigvee}$\bigvee$ & \verb|\bigvee| & This is the least upper bound, supremum, or join of all elements operated on. Thus it is the greatest element of such elements (\cite{Davey2002_zbMATH01748069}).\\
 \bottomrule
 \end{tabu*}
+
+\vspace*{\fill} \normalsize
+\begin{center}
+  \ccLogo \ccAttribution \ccShareAlike \vspace{1em}
+
+  Copyright Dr. Gavin Wood, co-founder of Ethereum and Parity Technologies: \url{gavin@parity.io} \vspace{1em}
+
+  This work is licensed under a "Creative Commons Attribution-ShareAlike 4.0" license: \url{http://creativecommons.org/licenses/by-sa/4.0/} \vspace{1em}
+
+  The layout has been optimised for print. The source is available on Github: \url{https://github.com/ethb3rlin/yellowpaper/}
+\end{center}
 \end{document}
